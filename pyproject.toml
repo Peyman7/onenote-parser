@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "onenote-parser"
+version = "1.0.0"
+description = "Production-ready extraction and normalization of Microsoft OneNote notebooks via Microsoft Graph."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "OneNote Parser maintainers" }]
+keywords = ["onenote", "microsoft-graph", "parser", "etl", "knowledge-management"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Text Processing :: Markup :: HTML",
+]
+dependencies = [
+  "requests>=2.28",
+  "beautifulsoup4>=4.11",
+]
+
+[project.optional-dependencies]
+auth = ["msal>=1.24"]
+ocr = ["pytesseract>=0.3.10", "Pillow>=9.0"]
+pdf = ["pypdf>=3.9"]
+xlsx = ["openpyxl>=3.1"]
+yaml = ["PyYAML>=6.0"]
+all = ["msal>=1.24", "pytesseract>=0.3.10", "Pillow>=9.0", "pypdf>=3.9", "openpyxl>=3.1", "PyYAML>=6.0"]
+dev = ["pytest>=7.4", "pytest-cov>=4.1", "mypy>=1.6", "ruff>=0.1"]
+
+[project.scripts]
+onenote-parser = "onenote_parser.cli:main"
+
+[project.urls]
+Documentation = "https://github.com/example/onenote-parser#readme"
+Source = "https://github.com/example/onenote-parser"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+onenote_parser = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.mypy]
+python_version = "3.10"
+warn_unused_ignores = true
+ignore_missing_imports = true

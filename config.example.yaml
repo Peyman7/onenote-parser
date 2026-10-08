@@ -1,0 +1,124 @@
+# ---------------------------------------------------------------------------
+# onenote-parser - example configuration
+#
+#   onenote-parser run --config config.yaml
+#
+# Every key below is optional; the values shown are the defaults unless noted.
+# Precedence: defaults < this file < environment < CLI flags.
+# Secrets belong in environment variables or a secret store, never here.
+# ---------------------------------------------------------------------------
+
+auth:
+  # device_code   - interactive sign-in, caches tokens on disk (first-time setup)
+  # refresh_token - headless delegated auth for scheduled runs  <- production
+  # client_credentials - app-only; RETIRED for OneNote on 2025-03-31
+  # static        - a token supplied via ONENOTE_ACCESS_TOKEN
+  mode: refresh_token
+  tenant_id: "00000000-0000-0000-0000-000000000000"
+  client_id: "11111111-1111-1111-1111-111111111111"
+  # client_secret: set ONENOTE_CLIENT_SECRET instead
+  # refresh_token: set ONENOTE_REFRESH_TOKEN instead
+  scopes: ["Notes.Read.All", "offline_access"]
+  token_cache_path: "~/.onenote-parser/token-cache.json"
+  expiry_leeway_seconds: 300
+
+graph:
+  base_url: "https://graph.microsoft.com"
+  api_version: "v1.0"
+  # Whose OneNote to read: me | users/<id-or-upn> | groups/<id> | sites/<id>
+  target: "users/onenote-svc@contoso.com"
+  timeout_seconds: 60
+  connect_timeout_seconds: 15
+  max_retries: 5
+  backoff_initial_seconds: 1.0
+  backoff_max_seconds: 60.0
+  backoff_multiplier: 2.0
+  # OneNote often returns 429 with no Retry-After header; this is the floor used
+  # in that case (jittered, and multiplied per attempt).
+  default_retry_after_seconds: 10.0
+  # Client-side ceiling. Documented OneNote limit is ~600 req/min/user.
+  requests_per_minute: 300
+  page_size: 100
+  verify_tls: true
+
+content:
+  # includeIDs=true gives every element a stable data-id used for block anchors.
+  include_ids: true
+  # Request InkML alongside HTML so handwriting is preserved as stroke data.
+  include_ink_ml: false
+  preserve_unsupported_html: true
+  max_text_chars: 0            # 0 = no cap on ParsedPage.text
+  detect_code_blocks: true
+  normalize_whitespace: true
+  drop_empty_blocks: true
+  infer_headings_from_style: true
+  order_by_position: true
+  skip_title_block: true
+
+images:
+  download: true
+  directory: "resources/images"
+  max_bytes: 26214400          # 25 MiB
+  min_bytes: 1024              # skip spacer/bullet artwork
+  deduplicate: true
+  prefer_full_resolution: true
+
+ocr:
+  enabled: false               # opt-in; needs the [ocr] extra + tesseract binary
+  engine: tesseract
+  languages: ["eng"]
+  min_width: 64
+  min_height: 64
+  max_bytes: 15728640
+  timeout_seconds: 60
+  min_confidence: null         # e.g. 55 to discard low-confidence output
+  cache_path: "resources/ocr-cache.json"
+  include_ink: true
+  # tesseract_cmd: "/usr/bin/tesseract"
+
+attachments:
+  download: true
+  directory: "resources/attachments"
+  max_bytes: 52428800          # 50 MiB
+  deduplicate: true
+  extract_text: true
+  max_extracted_chars: 200000
+  allowed_extensions: []       # empty = every format with an extractor
+  denied_extensions: [".exe", ".dll", ".msi", ".bat", ".cmd", ".scr"]
+
+filters:
+  notebook_names: []           # e.g. ["Engineering", "Operations"]
+  notebook_ids: []
+  section_names: []
+  section_ids: []
+  page_ids: []
+  exclude_notebook_names: ["Personal"]
+  exclude_section_names: ["Scratch"]
+  use_regex: false
+  # modified_since: "2024-06-01T00:00:00Z"
+  # max_pages: 100
+  include_subpages: true
+
+state:
+  enabled: true
+  path: "state/onenote-state.json"
+  mode: incremental            # incremental | full
+  detect_deletions: true
+  retain_inaccessible: true
+
+export:
+  formats: ["json", "jsonl", "markdown"]
+  output_dir: "output"
+  pretty: true
+  per_page_files: true
+  include_raw_html: false
+  markdown_front_matter: true
+  markdown_mirror_hierarchy: true
+
+runtime:
+  concurrency: 4
+  log_level: INFO
+  log_json: false
+  continue_on_error: true
+  fail_fast_after: 0           # 0 = never abort on consecutive failures
+  dry_run: false

@@ -1,0 +1,104 @@
+# ---------------------------------------------------------------------------
+# Secrets and credentials  — never commit
+# ---------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+*.env
+config.yaml
+config.yml
+config.local.*
+config.*.local.*
+!config.example.yaml
+secrets.*
+*.secrets.*
+.secrets/
+*.token-cache.json
+*token*cache*
+.msal_cache*
+.azure/
+*.pem
+*.key
+*.crt
+*.cer
+*.der
+*.p12
+*.pfx
+*.jks
+*.keystore
+id_rsa*
+id_ed25519*
+.netrc
+.npmrc
+.pypirc
+
+# ---------------------------------------------------------------------------
+# Raw data and run artifacts  — private notebook content, never commit
+# (output*/ also covers output-cbdesign/, output-streetlight/ and any
+#  future per-notebook run directory)
+# ---------------------------------------------------------------------------
+output*/
+/state/
+/resources/
+/logs/
+*.log
+/data/
+/raw/
+/exports/
+/export/
+/dump/
+/*.jsonl
+/pages/
+/markdown/
+index.json
+manifest.json
+resources.json
+
+# ---------------------------------------------------------------------------
+# Local docs / instructions (kept out of version control by choice)
+# ---------------------------------------------------------------------------
+/docs/
+CLAUDE.md
+
+# ---------------------------------------------------------------------------
+# Python build and tooling
+# ---------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+build/
+dist/
+.eggs/
+*.so
+.venv/
+venv/
+env/
+ENV/
+.python-version
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.dmypy.json
+.pyre/
+.pytype/
+.tox/
+.nox/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.ipynb_checkpoints/
+
+# ---------------------------------------------------------------------------
+# Editors, OS, agent-local settings
+# ---------------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+.claude/settings.local.json
